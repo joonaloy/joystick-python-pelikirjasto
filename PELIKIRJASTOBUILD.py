@@ -74,6 +74,7 @@ def while_loop():
     global btnindexY
     global FoundGame
     while True:
+        #menun navigointi joystickillä
         for event in pygame.event.get():
             if event.type == pygame.JOYAXISMOTION:
                 if event.axis == 0 and event.value > 0.9 and FoundGame == False:
