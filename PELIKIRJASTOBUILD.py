@@ -104,7 +104,7 @@ def while_loop():
 def process_loop():
     global FoundGame
     c = wmi.WMI()
-    #etsii uutta prosessia
+    #etsii uusia prosesseja
     process_watcher = c.Win32_Process.watch_for("creation")
     FoundGame = False
     while True:
