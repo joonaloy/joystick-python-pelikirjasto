@@ -8,7 +8,7 @@ import sys
 import threading
 import wmi
 import time
-
+#rootdir on missä kaikki pelit sijaitsevat
 rootdir = r"C:\Users\arcade machine/Documents"
 paths = []
 executables = []
@@ -17,9 +17,9 @@ btnindexX = 0
 btnindexY = 0
 FoundGame = False
 pygame.init()
-
+#etsii joystickit
 joystick_count = pygame.joystick.get_count()
-
+#jos ei joystickkejä sammuttaa itsensä
 if joystick_count == 0:
     print("No joysticks detected.")
     sys.exit()
@@ -27,20 +27,19 @@ if joystick_count == 0:
 joystick = pygame.joystick.Joystick(0)
 joystick.init()
 
-# print("Joystick name: {}".format(joystick.get_name()))
-# print("Number of axes: {}".format(joystick.get_numaxes()))
-# print("Number of buttons: {}".format(joystick.get_numbuttons()))
+#rungame käynnistää pelin pathin avulla
 def rungame(id):
     subprocess.Popen(paths[id])
+#tkinter loop menee rootdirin läpi ja etsii exe tiedostoja mitkä ei ole unity crash handlerejä
 def tkinter_loop():
     for subdir, dirs, files in os.walk(rootdir):
         for file in files:
             if file.endswith('.exe') and file != "UnityCrashHandler64.exe" and file != "UnityCrashHandler32.exe" :
+                #paths sisältää pelien pathit esim "C:/pelit/peli1.exe"
                 paths.append(os.path.join(subdir, file))
+                #executables sisältää pelien nimet esim "peli1.exe"
                 executables.append(file)
-    # print(executables)
-    # print(paths)
-
+    #tkinter ikkuna asetukset
     root = Tk()
     root.geometry("500x500")
     root.attributes('-fullscreen', True)
@@ -51,20 +50,23 @@ def tkinter_loop():
     style = ttk.Style()
     style.configure("Yellow.TButton", background="red")
 
-    
+    #tekee napin jokaiselle peli executablelle
     for i in range(len(executables)):
         col = 0
         offset = 0
+        #jos enemmän kun 20 peliä siirtää nappien tekemisen uudelle sarakkeelle
         if(i > 20):
             col += 2
             offset += 21
+        #pelin napin ja labelin asetukset
         lab = ttk.Label(frm, text=executables[i][0:-4],width=14,font=("Arial",11))
         lab.grid(column=col, row=i+1-offset)
         print(i+1-offset)
         but = ttk.Button(frm, text="Pelaa", command= partial(rungame,i),padding=3)
         but.grid(column=col+1, row=i+1-offset)
+        #lisää napin napit listaan
         buttons.append(but)
-    # print("BUTTONIT:",buttons)
+        #lisää ensimmäiselle napille reunan
     buttons[0].configure(style="Yellow.TButton")
     root.mainloop()
 def while_loop():
@@ -74,7 +76,6 @@ def while_loop():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.JOYAXISMOTION:
-                # print("Axis {} value: {}".format(event.axis, event.value))
                 if event.axis == 0 and event.value > 0.9 and FoundGame == False:
                     btnindexX +=1
                     print("X:{} Y:{}".format(btnindexX,btnindexY))
