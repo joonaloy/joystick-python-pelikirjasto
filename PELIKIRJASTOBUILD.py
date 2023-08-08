@@ -104,12 +104,13 @@ def while_loop():
 def process_loop():
     global FoundGame
     c = wmi.WMI()
+    #etsii uutta prosessia
     process_watcher = c.Win32_Process.watch_for("creation")
     FoundGame = False
     while True:
         new_process = process_watcher()
         print(new_process.Name)
-        
+        #jos prosessi on pelien listassa joystick ei enää navigoi pelikirjastoa kunnes peli on sammutettu
         if(new_process.Name in executables):
             print("Peli Käynnistettiin "+ new_process.Name)
             FoundGame = True
@@ -125,10 +126,7 @@ def process_loop():
             watcher()
             FoundGame=False
             print("Peli Sammutettiin "+ new_process.Name)
-            # en tiiä mitä tekee
-            # process_id, result = c.Win32_Process.Create(
-            #     CommandLine = "\"D:\\UnityProjektit\\WMItesti.exe\" "
-            # )
+#multithreadaaminen joten monta looppia toimii kerralla
 tkinter_thread = threading.Thread(target=tkinter_loop)
 tkinter_thread.start()
 process_thread = threading.Thread(target=while_loop)
